@@ -70,7 +70,7 @@ def _parse(s, force_list=False):
     if not s:
         return None if not force_list else []
     if ("," in s or force_list) and s[0] != "[":
-        s = "[" + s + "]"
+        s = f"[{s}]"
     try:
         return json.loads(s)
     except Exception:
@@ -160,13 +160,13 @@ def _get_formatter(formatspec: str) -> dict:
         )
         has_percent = type == "%" and s[len(s) - 1] == "%"
         if has_percent:
-            s = s[: len(s) - 1]
+            s = s[:-1]
         try:
             f = float(s)
         except Exception:
             return False
         if has_percent:
-            f = f / 100
+            f /= 100
         return int(f) if f.is_integer() else f
 
     # noUiSlider requires a format like {from: (float) => str, to: (str) => float}

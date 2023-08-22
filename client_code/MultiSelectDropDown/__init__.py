@@ -53,10 +53,10 @@ _defaults = {
 
 def _component_property(internal, jquery, fn=None):
     def getter(self):
-        return getattr(self, "_" + internal)
+        return getattr(self, f"_{internal}")
 
     def setter(self, value):
-        setattr(self, "_" + internal, value)
+        setattr(self, f"_{internal}", value)
         value = value if fn is None else fn(value)
         if value:
             self._el.attr(jquery, value)
@@ -138,10 +138,7 @@ class MultiSelectDropDown(MultiSelectDropDownTemplate):
     def selected(self, values):
         if not isinstance(values, (list, tuple)):
             values = [values]
-        to_select = []
-        for key, val in self._values.items():
-            if val in values:
-                to_select.append(key)
+        to_select = [key for key, val in self._values.items() if val in values]
         self._el.selectpicker("val", to_select)
 
     multiple = _component_property("multiple", "multiple")

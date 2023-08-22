@@ -30,7 +30,7 @@ def add_event(component: _Component, event: str) -> None:
     event: str - any jquery event string
     """
     if not isinstance(event, str):
-        raise TypeError("event must be type str and not " + type(event))
+        raise TypeError(f"event must be type str and not {type(event)}")
     _add_event(component, event)
 
     def handler(e):

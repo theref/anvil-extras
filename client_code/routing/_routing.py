@@ -56,6 +56,8 @@ def main_router(Cls):
     @routing.main_router
     """
 
+
+
     class MainRouter(Cls):
         def __init__(self, **properties):
             global _main_router, _current_form
@@ -66,13 +68,13 @@ def main_router(Cls):
             self.on_navigation()  # called the first time the form is loaded to start routing...
 
         def on_navigation(
-            self,
-            url_hash=None,
-            url_pattern=None,
-            url_dict=None,
-            path=None,
-            dynamic_vars=None,
-        ):
+                    self,
+                    url_hash=None,
+                    url_pattern=None,
+                    url_dict=None,
+                    path=None,
+                    dynamic_vars=None,
+                ):
             # when there is navigation - back/forward navigation
             # or when the user changes the url_hash or when you call anvil.set_url_hash in code
 
@@ -104,8 +106,7 @@ def main_router(Cls):
                 # To stop_unload return a value from the before_unload method
                 _navigation.setUnloadPopStateBehaviour(True)
                 try:
-                    stop_unload = _current_form.before_unload()
-                    if stop_unload:
+                    if stop_unload := _current_form.before_unload():
                         logger.print(
                             f"stop unload called from {_current_form.__class__.__name__}"
                         )
@@ -244,6 +245,7 @@ def main_router(Cls):
                         form=form,
                     )
 
+
     MainRouter.__name__ = Cls.__name__
     MainRouter.__module__ = Cls.__module__
     return MainRouter
@@ -266,7 +268,7 @@ class route:
             raise TypeError(
                 f"url_pattern must be type str not {type(self.url_pattern)} in {Cls.__name__}"
             )
-        if not (isinstance(self.url_keys, list) or isinstance(self.url_keys, tuple)):
+        if not (isinstance(self.url_keys, (list, tuple))):
             raise TypeError(
                 f"keys should be a list or tuple not {type(self.url_keys)} in {Cls.__name__}"
             )
@@ -414,7 +416,7 @@ def get_url_components(url_hash=None):
                     f"\nrouting.set_url_hash(url_pattern=url_pattern, url_dict=url_dict)"
                     f"\nFor correct encoding\n"
                 )
-                key_value_pairs[i] = pair = pair + "="
+                key_value_pairs[i] = pair = f"{pair}="
             key, value = pair.split("=", 1)
             key_value_pairs[i] = f"{key}={_anvil.http.url_decode(value)}"
         url_dict = dict(pair.split("=", 1) for pair in key_value_pairs)
@@ -527,17 +529,17 @@ def set_url_hash(
         logger.print(
             f"setting url_hash to: #{url_hash}, adding to top of history stack"
         )
-        _navigation.pushState("#" + url_hash)
-    elif set_in_history and replace_current_url:
+        _navigation.pushState(f"#{url_hash}")
+    elif set_in_history:
         logger.print(
             f"setting url_hash to: #{url_hash}, replacing current_url, setting in history"
         )
-        _navigation.replaceState("#" + url_hash)
-    elif not set_in_history and replace_current_url:
+        _navigation.replaceState(f"#{url_hash}")
+    elif replace_current_url:
         logger.print(
             f"setting url_hash to: #{url_hash}, replacing current_url, NOT setting in history"
         )
-        _navigation.replaceUrlNotState("#" + url_hash)
+        _navigation.replaceUrlNotState(f"#{url_hash}")
 
     global _properties
     _properties = properties
@@ -597,17 +599,17 @@ def load_form(
         logger.print(
             f"loading form {form.__name__}, with url_hash: #{url_hash}, replacing current url, setting in history"
         )
-        _navigation.replaceState("#" + url_hash)
+        _navigation.replaceState(f"#{url_hash}")
     elif replace_current_url:
         logger.print(
             f"loading form {form.__name__}, with url_hash: #{url_hash}, replacing current url, NOT setting in history"
         )
-        _navigation.replaceUrlNotState("#" + url_hash)
+        _navigation.replaceUrlNotState(f"#{url_hash}")
     else:
         logger.print(
             f"loading form {form.__name__}, with url_hash: #{url_hash}, adding to top of history stack"
         )
-        _navigation.pushState("#" + url_hash)
+        _navigation.pushState(f"#{url_hash}")
 
     if not load_from_cache:
         remove_from_cache(url_hash)
@@ -695,7 +697,7 @@ def _get_url_hash(url_pattern, url_dict):
     url_params = "&".join(
         f"{key}={_anvil.http.url_encode(str(value))}" for key, value in url_dict.items()
     )
-    url_params = "?" + url_params if url_params else ""
+    url_params = f"?{url_params}" if url_params else ""
     return url_pattern + url_params
 
 
@@ -705,7 +707,7 @@ def _finditem(obj, key):
     if key in obj:
         return obj[key]
     for k, v in obj.items():
-        if isinstance(v, dict) or isinstance(v, _anvil.LiveObjectProxy):
+        if isinstance(v, (dict, _anvil.LiveObjectProxy)):
             item = _finditem(v, key)
             if item is not None:
                 return item

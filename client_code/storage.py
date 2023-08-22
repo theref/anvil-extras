@@ -43,9 +43,9 @@ def _serialize(obj):
     elif ob_type is dict:
         return {key: val for key, val in obj.items() if _is_str(key)}
     elif ob_type is datetime:
-        return {_SPECIAL + "datetime": obj.isoformat()}
+        return {f"{_SPECIAL}datetime": obj.isoformat()}
     elif ob_type is date:
-        return {_SPECIAL + "date": obj.isoformat()}
+        return {f"{_SPECIAL}date": obj.isoformat()}
     else:
         raise TypeError(f"Cannot serialize an object of type {ob_type.__name__}")
 
@@ -315,8 +315,6 @@ if __name__ == "__main__":
         _["foo"] = None
         _["eggs"] = None
         _.update({"foo": "bar"}, eggs="spam", x=1)
-        for i in _:  # shouldn't fail
-            pass
         assert len(list(_.keys())) == 3 and _["eggs"] == "spam"
         assert list(_) == list(_.keys())
 

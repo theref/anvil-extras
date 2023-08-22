@@ -140,9 +140,7 @@ class Tabs(TabsTemplate):
         }
 
         self.init_components(**props_to_init)
-        # do this on the link element incase the user has already set the form show event
-        link_0 = self.get_components()[0]
-        if link_0:
+        if link_0 := self.get_components()[0]:
             link_0.set_event_handler("show", lambda **e: self._set_indicator())
 
     def _raise_tab_click(self, sender, tab_index, **event_args):

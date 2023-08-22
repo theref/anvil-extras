@@ -127,7 +127,7 @@ def pop(self, behavior):
     popper_element = _get_jquery_popper_element(self)
     _wait_for_transition(popper_element)
 
-    if behavior == "shown" or behavior == "is_visible":
+    if behavior in ["shown", "is_visible"]:
         return _is_visible(popper_element)
     elif behavior == "update":
         return _update_positions()
@@ -156,7 +156,7 @@ def set_default_max_width(width):
 
 def has_popover(component):
     if not isinstance(component, _anvil.Component):
-        raise TypeError("Expected a component, not " + type(component).__name__)
+        raise TypeError(f"Expected a component, not {type(component).__name__}")
     popper_element = _get_jquery_popper_element(component)
     _wait_for_transition(popper_element)
     # just incase we're being destroyed
@@ -179,9 +179,7 @@ def _get_next_id():
 
 def _get_data(popper_element, attr, default=None):
     data = popper_element.data("ae.popover")
-    if data is not None:
-        return data.get(attr, default)
-    return default
+    return data.get(attr, default) if data is not None else default
 
 
 def _set_data(popper_element, attr, value):
@@ -322,7 +320,7 @@ def _sticky_leave(e):
     popper_element = None
     popover_id = _S(e.currentTarget).attr("popover_id")
     if popover_id in _sticky_popovers and not _S(
-        "[popover_id='{}']:hover".format(popover_id)
+        f"[popover_id='{popover_id}']:hover"
     ):
         popper_element = _visible_popovers.get(popover_id)
     if popper_element is not None:
@@ -380,7 +378,7 @@ _window.addEventListener("scroll", _hide_on_scroll, True)
 def _popper_execute(popper_element, behavior: str):
     # see bug https://github.com/twbs/bootstrap/issues/16732
     if behavior not in ("hide", "show", "toggle", "destroy"):
-        raise ValueError("unrecognized behavior: {}".format(behavior))
+        raise ValueError(f"unrecognized behavior: {behavior}")
 
     if not _has_popover(popper_element):
         return

@@ -83,14 +83,14 @@ def _get_dom_node_id(component):
 
 def _spacing_property(a_b):
     def getter(self):
-        return getattr(self, "_spacing_" + a_b)
+        return getattr(self, f"_spacing_{a_b}")
 
     def setter(self, value):
         self._dom_node.classList.remove(
-            f"anvil-spacing-{a_b}-{getattr(self, '_spacing_' + a_b, '')}"
+            f"anvil-spacing-{a_b}-{getattr(self, f'_spacing_{a_b}', '')}"
         )
         self._dom_node.classList.add(f"anvil-spacing-{a_b}-{value}")
-        setattr(self, "_spacing_" + a_b, value)
+        setattr(self, f"_spacing_{a_b}", value)
 
     return property(getter, setter, None, a_b)
 

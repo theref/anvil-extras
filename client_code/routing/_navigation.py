@@ -126,8 +126,7 @@ def setUnloadPopStateBehaviour(flag):
 # while we wait for the unload function to complete
 def unloadPopStateTemp(e):
     e.preventDefault()
-    state = e.state
-    if state:
+    if state := e.state:
         temp_undo = current["pos"] - state["pos"]
         window.onpopstate = None  # unbind onpopstate
         history.go(temp_undo)  # reverse the navigation

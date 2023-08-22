@@ -34,17 +34,15 @@ def authorisation_required(permissions):
             if user is None:
                 raise ValueError("Authentication required")
             if isinstance(permissions, str):
-                required_permissions = set([permissions])
+                required_permissions = {permissions}
             else:
                 required_permissions = set(permissions)
             try:
-                user_permissions = set(
-                    [
-                        permission["name"]
-                        for role in user["roles"]
-                        for permission in role["permissions"]
-                    ]
-                )
+                user_permissions = {
+                    permission["name"]
+                    for role in user["roles"]
+                    for permission in role["permissions"]
+                }
             except TypeError:
                 raise ValueError("Authorisation required")
 

@@ -148,14 +148,10 @@ class Transition(dict):
 
     def __ror__(self, other):
         other = self._check_other(other)
-        if other is NotImplemented:
-            return NotImplemented
-        return other.__or__(self)
+        return NotImplemented if other is NotImplemented else other.__or__(self)
 
     def __reversed__(self):
-        reverse = {}
-        for key, val in self.items():
-            reverse[key] = list(reversed(val))
+        reverse = {key: list(reversed(val)) for key, val in self.items()}
         return self._create(reverse, self._t_keys, self._t_len)
 
     @classmethod
@@ -454,10 +450,7 @@ def wait_for(animation_or_component, include_children=False):
 class DOMRect:
     # For autocompletions only
     def __new__(cls, *, x=None, y=None, width=None, height=None, obj=None):
-        if obj is not None:
-            return obj
-        else:
-            return _window.DOMRect(x, y, width, height)
+        return obj if obj is not None else _window.DOMRect(x, y, width, height)
 
     def __init__(self, *, x, y, width, height):
         # another just for the autocomplete

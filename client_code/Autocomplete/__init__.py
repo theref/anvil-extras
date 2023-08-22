@@ -101,9 +101,7 @@ class Autocomplete(AutocompleteTemplate):
                 return False
             node = self._get_node(text)
             if n:
-                node.tag.innerHTML = (
-                    text[:i] + "<b>" + text[i : i + n] + "</b>" + text[i + n :]
-                )
+                node.tag.innerHTML = f"{text[:i]}<b>{text[i:i + n]}</b>{text[i + n:]}"
             return node
 
         nodes = filter(None, map(get_node_with_emph, self.suggestions))

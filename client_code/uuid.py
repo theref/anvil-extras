@@ -19,7 +19,7 @@ class UUID(str):
             raise ValueError("badly formed hexadecimal UUID string")
 
     def __repr__(self):
-        return "UUID('" + self + "')"
+        return f"UUID('{self}')"
 
     @property
     def bytes(self):
